@@ -5,16 +5,25 @@ import java.util.*
 import kotlin.test.Test
 
 class Day10 {
+    private val opener = "([{<"
+    private val closer = ")]}>"
+
+    sealed class Result {
+        object Valid: Result()
+        data class Corrupted(val char: Char, val stack: String): Result()
+        data class Incomplete(val stack: String): Result()
+    }
+
     @Test
     fun part1() {
-        check(validate("([])").status == Status.Valid)
-        check(validate("{()()()}").status == Status.Valid)
-        check(validate("<([{}])>").status == Status.Valid)
-        check(validate("[<>({}){}[([])<>]]").status == Status.Valid)
-        check(validate("(((((((((())))))))))").status == Status.Valid)
-        check(validate("(]") == Result(Status.Corrupted, ']', ")"))
-        check(validate("(") == Result(Status.Incomplete, null, ")"))
-        check(validate("([{<") == Result(Status.Incomplete, null, ">}])"))
+        check(validate("([])") == Result.Valid)
+        check(validate("{()()()}") == Result.Valid)
+        check(validate("<([{}])>") == Result.Valid)
+        check(validate("[<>({}){}[([])<>]]") == Result.Valid)
+        check(validate("(((((((((())))))))))") == Result.Valid)
+        check(validate("(]") == Result.Corrupted(']', ")"))
+        check(validate("(") == Result.Incomplete(")"))
+        check(validate("([{<") == Result.Incomplete(">}])"))
 
         val test = loadLines("day10/_test.txt")
         check(score1(test) == 26397)
@@ -49,7 +58,10 @@ class Day10 {
 
 
     private fun score1(lines: List<String>): Int = lines.sumOf { score1(validate(it)) }
-    private fun score1(result: Result): Int = score1(result.char)
+    private fun score1(result: Result): Int = when (result) {
+        is Result.Corrupted -> score1(result.char)
+        else -> 0
+    }
     private fun score1(char: Char?): Int = when (char) {
         null -> 0
         ')' -> 3
@@ -59,9 +71,10 @@ class Day10 {
         else -> throw IllegalArgumentException("Invalid char $char")
     }
 
-    private fun score2(result: Result): Long =
-        if (result.status != Status.Incomplete) 0
-        else result.stack!!.fold(0L) { acc, v -> acc * 5 + score2(v) }
+    private fun score2(result: Result): Long = when (result) {
+        is Result.Incomplete -> result.stack.fold(0L) { acc, v -> acc * 5 + score2(v) }
+        else -> 0
+    }
 
     private fun score2(char: Char): Int = when (char) {
         ')' -> 1
@@ -80,29 +93,15 @@ class Day10 {
                 stack.add(closer[opener.indexOf(c)])
             } else if (closer.contains(c)) {
                 if (stack.empty() || c != stack.peek())
-                    return Result(c, stack)
+                    return Result.Corrupted(c, stack.flatten())
                 stack.pop()
             } else {
-                return Result(c, stack)
+                return Result.Corrupted(c, stack.flatten())
             }
             index += 1
         }
-        return if (stack.empty()) Result() else Result(stack)
+        return if (stack.empty()) Result.Valid else Result.Incomplete(stack.flatten())
     }
-
-    enum class Status { Valid, Incomplete, Corrupted }
-    data class Result(
-        val status: Status,
-        val char: Char?,
-        val stack: String?
-    ) {
-        constructor() : this(Status.Valid, null, null) {}
-        constructor(char: Char, stack: Stack<Char>) : this(Status.Corrupted, char, stack.flatten())
-        constructor(stack: Stack<Char>) : this(Status.Incomplete, null, stack.flatten())
-    }
-
-    private val opener = "([{<"
-    private val closer = ")]}>"
 }
 
-private fun Stack<Char>?.flatten(): String? = this?.reversed()?.joinToString("")
+private fun Stack<Char>.flatten(): String = this.reversed().joinToString("")
