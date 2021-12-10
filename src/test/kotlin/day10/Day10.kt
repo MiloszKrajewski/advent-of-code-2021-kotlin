@@ -44,8 +44,7 @@ class Day10 {
             .filter { it != 0L }
             .sorted()
             .toLongArray()
-        val testSample = testResults[testResults.size / 2]
-        return testSample
+        return testResults[testResults.size / 2]
     }
 
 
