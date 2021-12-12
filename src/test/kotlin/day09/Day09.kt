@@ -7,7 +7,7 @@ import kotlin.test.Test
 class Day09 {
     @Test
     fun part1() {
-        val test = loadMap("_test.txt")
+        val test = loadMap("_test10.txt")
         check(sumRisk(test, findLowPoints(test)) == 15)
 
         val data = loadMap("_data.txt")
@@ -17,7 +17,7 @@ class Day09 {
 
     @Test
     fun part2() {
-        check(solve2("_test.txt") == 1134)
+        check(solve2("_test10.txt") == 1134)
         println(solve2("_data.txt"))
     }
 
