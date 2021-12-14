@@ -11,4 +11,7 @@ fun loadString(filename: String): String =
 fun String.md5(): String =
     BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray())).toString(16)
 
+fun String.insertAt(i: Int, c: Char): String =
+    StringBuilder(this).apply { insert(i, c) }.toString()
+
 fun Int.round(step: Int) = this / step * step
