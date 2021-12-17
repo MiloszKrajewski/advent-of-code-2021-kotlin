@@ -2,6 +2,10 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
+fun sgn0(v: Int): Int = if (v == 0) 0 else if (v < 0) -1 else 1
+
+fun <T> T?.failIfNull(): T = this ?: throw NullPointerException()
+
 fun loadLines(filename: String): List<String> =
     File("./src/test/kotlin", filename).readLines()
 
