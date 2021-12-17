@@ -1,6 +1,6 @@
 package day07
 
-import loadString
+import loadText
 import kotlin.math.abs
 import kotlin.test.Test
 
@@ -37,5 +37,5 @@ class Day07 {
         test.sumOf { cost(abs(it.toLong() - i)) }
 
     private fun loadData(filename: String): List<Int> =
-        loadString(filename).split(',').map { it.trim().toInt() }.toList()
+        loadText(filename).split(',').map { it.trim().toInt() }.toList()
 }

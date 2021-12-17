@@ -5,7 +5,7 @@ import java.security.MessageDigest
 fun loadLines(filename: String): List<String> =
     File("./src/test/kotlin", filename).readLines()
 
-fun loadString(filename: String): String =
+fun loadText(filename: String): String =
     File("./src/test/kotlin", filename).readText()
 
 fun String.md5(): String =
