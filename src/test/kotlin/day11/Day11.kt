@@ -3,7 +3,7 @@ package day11
 import loadLines
 import kotlin.test.Test
 
-class Impl {
+class Day11 {
     @Test
     fun part1() {
         val mini = loadMap("day11/_mini.txt")

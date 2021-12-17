@@ -3,7 +3,7 @@ package day13
 import loadLines
 import org.junit.jupiter.api.Test
 
-class Impl {
+class Day13 {
     @Test
     fun test1() {
         val map = loadMap("day13/_test.txt")

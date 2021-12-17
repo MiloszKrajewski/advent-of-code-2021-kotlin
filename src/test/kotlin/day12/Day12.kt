@@ -3,7 +3,7 @@ package day12
 import loadLines
 import kotlin.test.Test
 
-class Impl {
+class Day12 {
     @Test
     fun part1() {
         test1("day12/_test10.txt", 10)

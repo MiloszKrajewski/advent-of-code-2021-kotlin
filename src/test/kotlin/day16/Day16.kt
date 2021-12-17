@@ -4,7 +4,7 @@ import loadText
 import org.junit.jupiter.api.Test
 import java.lang.Long.*
 
-class Impl {
+class Day16 {
     sealed class Packet {
         data class Number(val version: Int, val value: Long) : Packet()
         data class Operator(val version: Int, val type: Int, val packets: List<Packet>) : Packet()

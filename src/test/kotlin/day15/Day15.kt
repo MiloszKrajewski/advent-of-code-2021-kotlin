@@ -3,7 +3,7 @@ package day15
 import loadLines
 import org.junit.jupiter.api.Test
 
-class Impl {
+class Day15 {
     data class Point(val x: Int, val y: Int) {
         fun move(dx: Int, dy: Int) = Point(dx + x, dy + y)
     }

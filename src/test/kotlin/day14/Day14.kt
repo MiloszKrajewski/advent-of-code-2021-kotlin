@@ -4,7 +4,7 @@ import insertAt
 import loadLines
 import org.junit.jupiter.api.Test
 
-class Impl {
+class Day14 {
     @Test
     fun test1() {
         val (state, rules) = loadData("day14/_test.txt")
