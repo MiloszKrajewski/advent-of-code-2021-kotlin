@@ -71,7 +71,7 @@ class Day18 {
     fun test1_deepDive() {
         val n1 = loadElement("[[[[[9,8],1],2],3],4]")
         check(leftmostBelow(n1, 4).toString() == "[9,8]")
-        check(leftmostBelow(n1, 5).toString() == "9")
+        check(leftmostBelow(n1, 5) == null)
         check(leftmostBelow(n1, 6) == null)
     }
 
