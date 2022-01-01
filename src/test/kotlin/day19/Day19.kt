@@ -68,7 +68,7 @@ class Day19 {
 		fun rotate(rotation: Rotation): Vector =
 			rotateX(rotation.x).rotateY(rotation.y).rotateZ(rotation.z)
 
-		fun mahattan(): Int = x.absoluteValue + y.absoluteValue + z.absoluteValue
+		fun manhattan(): Int = x.absoluteValue + y.absoluteValue + z.absoluteValue
 	}
 
 	class Scan(val center: Point, val vectors: Set<Vector>) {
@@ -162,15 +162,15 @@ class Day19 {
 	}
 
 	private fun solve2(scans: List<Scan>): List<Scan> {
-		var head = scans.take(1).toMutableList()
-		var tail = scans.drop(1).toMutableList()
+		val head = scans.take(1).toMutableList()
+		val tail = scans.drop(1).toMutableSet()
 
 		outer@ while (tail.size > 0) {
-			for (other in tail) {
-				val transform = head.firstNotNullOfOrNull { s -> findTransform(s, other) }
+			for (next in tail) {
+				val transform = head.firstNotNullOfOrNull { findTransform(it, next) }
 				if (transform != null) {
-					head.add(other.transform(transform))
-					tail.remove(other)
+					head.add(next.transform(transform))
+					tail.remove(next)
 					continue@outer
 				}
 			}
@@ -219,7 +219,7 @@ class Day19 {
 		var max = 0
 		for (a in solution) {
 			for (b in solution) {
-				val dst = a.vectorTo(b).mahattan()
+				val dst = a.vectorTo(b).manhattan()
 				if (dst > max) max = dst
 			}
 		}
