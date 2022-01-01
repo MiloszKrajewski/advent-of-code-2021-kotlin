@@ -214,7 +214,7 @@ class Day19 {
 	@Test
 	fun solve2() {
 		val scanners = loadReadings("day19/_data.txt")
-		val solution = solve2(scanners).map { s -> s.center }
+		val solution = solve2(scanners).map { it.center }
 
 		var max = 0
 		for (a in solution) {
