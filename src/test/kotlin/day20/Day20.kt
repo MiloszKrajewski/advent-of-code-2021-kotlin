@@ -8,9 +8,9 @@ class Day20 {
 		fun offset(dx: Int, dy: Int) = Point(x + dx, y + dy)
 	}
 
-	class Image(val background: Boolean, private val bits: Set<Point>) {
+	class Image(private val background: Boolean, private val bits: Set<Point>) {
 		fun get(p: Point): Int = if (bits.contains(p) xor background) 1 else 0
-		fun cnt(lit: Boolean = true): Long = if (lit == background) Long.MAX_VALUE else bits.size.toLong()
+		fun cnt(lit: Boolean = true): Int = if (lit == background) Int.MAX_VALUE else bits.size
 		fun poi(): Set<Point> = bits
 
 		private fun update1(current: Int?, set: Boolean, mask: Int): Int {
@@ -48,14 +48,15 @@ class Day20 {
 	}
 
 	class Algorithm(private val bits: Set<Int>) {
-		fun valid(): Boolean = !get(0) || !get(511)
+		fun valid(): Boolean = (!get(0) || !get(511)) && (bits.all { it in 0..511 })
 		fun flip(): Boolean = get(0)
 		fun get(v: Int) = bits.contains(v)
 	}
 
-	fun load(filename: String): Pair<Algorithm, Image> {
+	private fun load(filename: String): Pair<Algorithm, Image> {
 		val lines = loadLines(filename)
-		val algorithmBits = lines[0].withIndex().mapNotNull { (i, c) -> if (c == '#') i else null }.toSet()
+		val algorithmLine = lines[0]
+		val algorithmBits = algorithmLine.withIndex().mapNotNull { (i, c) -> if (c == '#') i else null }.toSet()
 		val imageBits = lines.drop(2).withIndex().flatMap { (row, l) ->
 			l.withIndex().mapNotNull { (col, c) ->
 				if (c == '#') Point(col, row) else null
@@ -63,6 +64,7 @@ class Day20 {
 		}.toSet()
 		val algorithm = Algorithm(algorithmBits)
 		val image = Image(false, imageBits)
+
 		check(algorithm.valid()) { "Algorithm is not valid" }
 		return Pair(algorithm, image)
 	}
@@ -72,7 +74,7 @@ class Day20 {
 		val (algorithm, image) = load("day20/_test.txt")
 		val twice = image.process(algorithm).process(algorithm)
 		debug(twice)
-		check(twice.cnt() == 35L)
+		check(twice.cnt() == 35)
 	}
 
 	@Test
@@ -96,7 +98,7 @@ class Day20 {
 	fun test2_1() {
 		val (algorithm, image) = load("day20/_test.txt")
 		val fiftyTimes = (1..50).fold(image) { acc, _ -> acc.process(algorithm) }
-		check(fiftyTimes.cnt() == 3351L)
+		check(fiftyTimes.cnt() == 3351)
 	}
 
 	@Test
