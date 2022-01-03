@@ -8,7 +8,7 @@ class Day21 {
 		fun next(): Int
 	}
 
-	class DeterministicDice: Dice {
+	class DeterministicDice : Dice {
 		private var _current: Int = 0 // 0..99
 
 		override fun next(): Int {
@@ -45,9 +45,9 @@ class Day21 {
 	@Test
 	fun test1_1() {
 		val d = DeterministicDice()
-		val a = Player("a",4)
+		val a = Player("a", 4)
 		val b = Player("b", 8)
-		val g = SimpleGame(a,  b)
+		val g = SimpleGame(a, b)
 		var x: SimpleGame = g
 
 		fun validate(expected: Int) {
@@ -93,7 +93,7 @@ class Day21 {
 	fun solve1() {
 		val d = DeterministicDice()
 		val a = Player("a", 4)
-		val b = Player("b",7)
+		val b = Player("b", 7)
 		play1(d, a, b)
 	}
 
@@ -122,7 +122,7 @@ class Day21 {
 	@Test
 	fun test2_1() {
 		val a = Player("a", 4)
-		val b = Player("b",8)
+		val b = Player("b", 8)
 		val w = play2(a, b)
 		check(w["a"] == 444356092776315L)
 		check(w["b"] == 341960390180808L)
@@ -131,7 +131,7 @@ class Day21 {
 	@Test
 	fun solve2() {
 		val a = Player("a", 4)
-		val b = Player("b",7)
+		val b = Player("b", 7)
 		val w = play2(a, b)
 		val max = w.values.maxOrNull().failIfNull()
 		println("solve2: $w, max=$max")
