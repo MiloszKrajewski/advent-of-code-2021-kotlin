@@ -217,7 +217,6 @@ class Day22 {
 		check(stacked.sumOf { it.volume } == 2758514936282235L)
 	}
 
-	// This takes 5min which isn't great but at least it is finite time
 	@Test
 	fun solve2_2() {
 		val commands = loadLines("day22/_data.txt").map { parseCommand(it) }
