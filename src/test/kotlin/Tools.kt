@@ -24,3 +24,14 @@ fun String.insertAt(i: Int, c: Char): String =
     StringBuilder(this).apply { insert(i, c) }.toString()
 
 fun Int.round(step: Int) = this / step * step
+
+fun IntRange.overlap(other: IntRange): IntRange? {
+    val minA = this.first
+    val maxA = this.last + 1
+    val minB = other.first
+    val maxB = other.last + 1
+    if (minA >= maxB || maxA <= minB) return null
+    val minR = Integer.max(minA, minB)
+    val maxR = Integer.min(maxA, maxB)
+    return minR until maxR
+}

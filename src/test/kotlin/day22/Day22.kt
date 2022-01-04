@@ -5,6 +5,7 @@ import loadLines
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.fail
+import overlap
 
 class Day22 {
 	data class Point(val x: Int, val y: Int, val z: Int)
@@ -41,11 +42,20 @@ class Day22 {
 			}
 		}
 
-		fun volume(): Long {
-			val dx = b.x - a.x + 1
-			val dy = b.y - a.y + 1
-			val dz = b.z - a.z + 1
-			return dx.toLong() * dy.toLong() * dz.toLong()
+		val volume: Long
+			get() {
+				val dx = b.x - a.x + 1
+				val dy = b.y - a.y + 1
+				val dz = b.z - a.z + 1
+				return dx.toLong() * dy.toLong() * dz.toLong()
+			}
+
+		fun overlap(other: Cube): Cube? {
+			val x = (this.a.x..this.b.x).overlap(other.a.x..other.b.x)
+			val y = (this.a.y..this.b.y).overlap(other.a.y..other.b.y)
+			val z = (this.a.z..this.b.z).overlap(other.a.z..other.b.z)
+			if (x == null || y == null || z == null) return null
+			return Cube(Point(x.first, y.first, z.first), Point(x.last, y.last, z.last))
 		}
 	}
 
@@ -151,7 +161,7 @@ class Day22 {
 		val commands = loadLines("day22/_test.txt").map { parseCommand(it) }
 		val universe = Cube.create(-50..50, -50..50, -50..50)
 		val history = History(commands.filter { it.cube.inside(universe) })
-		val volume = history.partition().sumOf { it.volume() }
+		val volume = history.partition().sumOf { it.volume }
 		check(volume == 590784L)
 	}
 
@@ -159,15 +169,60 @@ class Day22 {
 	fun test2_2() {
 		val commands = loadLines("day22/_test2.txt").map { parseCommand(it) }
 		val history = History(commands)
-		val volume = history.partition().sumOf { it.volume() }
+		val volume = history.partition().sumOf { it.volume }
 		check(volume == 2758514936282235L)
 	}
 
+	/*
 	// This takes 5min which isn't great but at least it is finite time
 	@Test
 	fun solve2_1() {
 		val commands = loadLines("day22/_data.txt").map { parseCommand(it) }
-		val volume = History(commands).partition().sumOf { it.volume() }
+		val volume = History(commands).partition().sumOf { it.volume }
 		println("solve2_1: $volume")
+	}
+	*/
+
+	@Test
+	fun overlap_1() {
+		check((5..7).overlap(1..9) == (5..7))
+		check((5..7).overlap(1..6) == (5..6))
+		check((5..7).overlap(0..5) == (5..5))
+		check((5..7).overlap(0..4) == null)
+		check((5..7).overlap(7..9) == (7..7))
+		check((5..7).overlap(6..9) == (6..7))
+	}
+
+	class WeightedCube(val weight: Int, val cube: Cube) {
+		val volume: Long get() = weight * cube.volume
+		fun overlap(other: Cube): WeightedCube? =
+			cube.overlap(other)?.let { WeightedCube(-weight, it) }
+	}
+
+	private fun solve2(commands: List<Command>): List<WeightedCube> {
+		val stacked = mutableListOf<WeightedCube>()
+		commands.forEach { command ->
+			val added = command.cube
+			val generated = stacked.mapNotNull { it.overlap(added) }
+			stacked.addAll(generated)
+			if (command.turnOn) stacked.add(WeightedCube(1, added))
+		}
+		return stacked
+	}
+
+	@Test
+	fun test2_3() {
+		val commands = loadLines("day22/_test2.txt").map { parseCommand(it) }
+		val stacked = solve2(commands)
+		check(stacked.sumOf { it.volume } == 2758514936282235L)
+	}
+
+	// This takes 5min which isn't great but at least it is finite time
+	@Test
+	fun solve2_2() {
+		val commands = loadLines("day22/_data.txt").map { parseCommand(it) }
+		val stacked = solve2(commands)
+		val volume = stacked.sumOf { it.volume }
+		println("solve2_2: $volume")
 	}
 }
